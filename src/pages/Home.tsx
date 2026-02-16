@@ -5,7 +5,7 @@ import HopeAssistant from "@/components/HopeAssistant";
 import FindNearMeButton from "@/components/FindNearMeButton";
 import CategoryFilter from "@/components/CategoryFilter";
 import ResourceList from "@/components/ResourceList";
-import CallHopeCard from "@/components/CallHopeCard";
+
 import EmergencyLocation from "@/components/EmergencyLocation";
 import { resources, type Resource } from "@/data/resources";
 import { calculateDistance } from "@/lib/geolocation";
@@ -123,8 +123,6 @@ export default function Home() {
           </TabsList>
 
           <TabsContent value="resources" className="mt-0 space-y-6">
-            <CallHopeCard />
-
             <div className="flex justify-center">
               <FindNearMeButton
                 onLocationFound={handleLocationFound}
