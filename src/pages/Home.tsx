@@ -6,12 +6,9 @@ import FindNearMeButton from "@/components/FindNearMeButton";
 import CategoryFilter from "@/components/CategoryFilter";
 import ResourceList from "@/components/ResourceList";
 
-import EmergencyLocation from "@/components/EmergencyLocation";
 import { resources, type Resource } from "@/data/resources";
 import { calculateDistance } from "@/lib/geolocation";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageCircle, List, MapPin } from "lucide-react";
 import heroImage from "@/assets/village-hero.png";
 
 export default function Home() {
@@ -21,7 +18,6 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<Resource["category"] | "all">("all");
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
-  const [activeTab, setActiveTab] = useState("resources");
 
   const distances = useMemo(() => {
     const map = new Map<string, number>();
@@ -97,66 +93,38 @@ export default function Home() {
           </div>
         </section>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 min-h-14 mb-6">
-            <TabsTrigger
-              value="resources"
-              className="min-h-12 text-sm font-medium gap-1"
-            >
-              <List className="h-4 w-4" aria-hidden="true" />
-              {t("Resources", "Recursos")}
-            </TabsTrigger>
-            <TabsTrigger
-              value="assistant"
-              className="min-h-12 text-sm font-medium gap-1"
-            >
-              <MessageCircle className="h-4 w-4" aria-hidden="true" />
-              {t("Chat", "Chat")}
-            </TabsTrigger>
-            <TabsTrigger
-              value="emergency"
-              className="min-h-12 text-sm font-medium gap-1 data-[state=active]:bg-destructive data-[state=active]:text-destructive-foreground"
-            >
-              <MapPin className="h-4 w-4" aria-hidden="true" />
-              {t("SOS", "SOS")}
-            </TabsTrigger>
-          </TabsList>
+        <section className="space-y-6">
+          <HopeAssistant />
+        </section>
 
-          <TabsContent value="resources" className="mt-0 space-y-6">
-            <div className="flex justify-center">
-              <FindNearMeButton
-                onLocationFound={handleLocationFound}
-                isLoading={isLoadingLocation}
-                setIsLoading={setIsLoadingLocation}
-                onError={handleLocationError}
-              />
-            </div>
+        <hr className="my-8 border-border" />
 
-            <CategoryFilter
-              selectedCategory={selectedCategory}
-              onCategoryChange={setSelectedCategory}
+        <section className="space-y-6">
+          <div className="flex justify-center">
+            <FindNearMeButton
+              onLocationFound={handleLocationFound}
+              isLoading={isLoadingLocation}
+              setIsLoading={setIsLoadingLocation}
+              onError={handleLocationError}
             />
+          </div>
 
-            <div className="flex items-center justify-between gap-2 flex-wrap">
-              <h2 className="text-2xl font-semibold text-foreground">
-                {t("Available Resources", "Recursos Disponibles")}
-              </h2>
-              <span className="text-sm text-muted-foreground">
-                {filteredResources.length} {t("resources", "recursos")}
-              </span>
-            </div>
+          <CategoryFilter
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+          />
 
-            <ResourceList resources={filteredResources} distances={distances} />
-          </TabsContent>
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <h2 className="text-2xl font-semibold text-foreground">
+              {t("Available Resources", "Recursos Disponibles")}
+            </h2>
+            <span className="text-sm text-muted-foreground">
+              {filteredResources.length} {t("resources", "recursos")}
+            </span>
+          </div>
 
-          <TabsContent value="assistant" className="mt-0">
-            <HopeAssistant />
-          </TabsContent>
-
-          <TabsContent value="emergency" className="mt-0">
-            <EmergencyLocation />
-          </TabsContent>
-        </Tabs>
+          <ResourceList resources={filteredResources} distances={distances} />
+        </section>
       </main>
     </div>
   );

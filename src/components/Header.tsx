@@ -1,15 +1,18 @@
+import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { Phone } from "lucide-react";
+import { Phone, MapPin } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import EmergencyLocation from "@/components/EmergencyLocation";
 
 export default function Header() {
   const { language, toggleLanguage, t } = useLanguage();
+  const [showSOS, setShowSOS] = useState(false);
 
   const emergencyNumbers = [
     { name: t("911 Emergency", "911 Emergencia"), number: "911" },
@@ -37,33 +40,53 @@ export default function Header() {
           4-HELP
         </h1>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="destructive"
-              size="sm"
-              className="min-h-10 gap-1 font-semibold"
-              aria-label={t("Emergency contacts", "Contactos de emergencia")}
-            >
-              <Phone className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("Emergency", "Emergencia")}</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            {emergencyNumbers.map((emergency) => (
-              <DropdownMenuItem key={emergency.number} asChild>
-                <a
-                  href={`tel:${emergency.number}`}
-                  className="flex items-center justify-between gap-2 cursor-pointer"
-                >
-                  <span>{emergency.name}</span>
-                  <span className="font-mono font-bold text-destructive">{emergency.number}</span>
-                </a>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={() => setShowSOS(!showSOS)}
+            variant="destructive"
+            size="sm"
+            className="min-h-10 gap-1 font-semibold"
+            aria-label={t("SOS - Share your location", "SOS - Comparte tu ubicación")}
+            aria-expanded={showSOS}
+          >
+            <MapPin className="h-4 w-4" />
+            SOS
+          </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="destructive"
+                size="sm"
+                className="min-h-10 gap-1 font-semibold"
+                aria-label={t("Emergency contacts", "Contactos de emergencia")}
+              >
+                <Phone className="h-4 w-4" />
+                <span className="hidden sm:inline">{t("Emergency", "Emergencia")}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              {emergencyNumbers.map((emergency) => (
+                <DropdownMenuItem key={emergency.number} asChild>
+                  <a
+                    href={`tel:${emergency.number}`}
+                    className="flex items-center justify-between gap-2 cursor-pointer"
+                  >
+                    <span>{emergency.name}</span>
+                    <span className="font-mono font-bold text-destructive">{emergency.number}</span>
+                  </a>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
+
+      {showSOS && (
+        <div className="w-full border-t bg-background px-4 py-4 max-w-4xl mx-auto">
+          <EmergencyLocation />
+        </div>
+      )}
     </header>
   );
 }
